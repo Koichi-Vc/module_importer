@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from re import sub, escape
 import logging
+from sys import exc_info
 from traceback import print_exc
 print(f'.utils.imports_module.py>>>>>')
 print('カレントディレクトリ: ', os.getcwd())
@@ -14,7 +15,6 @@ print(f'name: {__name__}')
 24/12/04/401am
 get_module, split_module_pathを修正、さらにget_module_attrを新規で追加。
 より柔軟なモジュールやオブジェクトの動的インポートを可能にした。
-
 '''
 
 def create_module_import_path(file_path):
@@ -45,7 +45,7 @@ def split_module_path(module_path, split_place=None):
         return module_name, obj_name
     
     if split_place is None:
-        split_place = module_path.count('.')
+        split_place = module_path.count('.')-1#最後のドット節がimport節に来る様に調整。25/1/06/
 
     replace_path = module_path.replace('.', '-', split_place).split('.', 1)
     split_path = [ph.replace('-', '.') for ph in replace_path]
@@ -102,8 +102,14 @@ def get_module(module_path_name, split_place=None):
 
             except ModuleNotFoundError:
                 #モジュールを取得できなかった場合は、インポート出来る迄分割するドットを左へずらして行く。
+                exc_type, exc_value, exc_traceback = exc_info()
+                if module_path_name not in str(exc_value) and module_name not in str(exc_value):
+                    #errorメッセージにインポートするモジュールやオブジェクト名が含まれていなかった場合、予期しないエラーが発生したと解釈し発出する。
+                    module = None
+                    break
                 module = None
                 module_name, obj_name = split_module_path(module_path_name, split_place=place)
+
         
         #break又はfor終了時点でのmoduleインポート状況を評価
         if module is None:

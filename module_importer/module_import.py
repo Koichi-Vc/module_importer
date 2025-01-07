@@ -1,9 +1,7 @@
 import importlib
-from importlib.util import find_spec
-import os
+import logging
 from pathlib import Path
 from re import sub, escape
-import logging
 from sys import exc_info
 from traceback import print_exc
 

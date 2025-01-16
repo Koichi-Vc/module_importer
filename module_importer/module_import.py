@@ -89,7 +89,7 @@ def get_module(module_path_name, split_place=None):
                 #モジュールを取得できなかった場合は、インポート出来る迄分割するドットを左へずらして行く。
                 exc_type, exc_value, exc_traceback = exc_info()
                 if module_path_name not in str(exc_value) and module_name not in str(exc_value):
-                    #errorメッセージにインポートするモジュールやオブジェクト名が含まれていなかった場合、予期しないエラーが発生したと解釈し発出する。
+                    #errorメッセージにインポートするモジュールやオブジェクト名が含まれていなかった場合、予期しないエラーが発生したと解釈する。
                     module = None
                     break
                 module = None
@@ -98,7 +98,7 @@ def get_module(module_path_name, split_place=None):
         
         #break又はfor終了時点でのmoduleインポート状況を評価
         if module is None:
-            #Noneの場合、改めてmodule_nameでインポートを試みて尚インポート不可能な場合は、ModuleNotFoundErrorが正式に発出される。
+            #Noneの場合、改めてmodule_nameでインポートを試みる。
             module = importlib.import_module(module_name)
     
     if module and obj_name:

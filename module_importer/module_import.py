@@ -47,7 +47,7 @@ def split_module_path(module_path, split_place=None):
 
 
 def get_module_attr(module, attr_path):
-    ''' モジュールのオブジェクトをパスをたどって順番に取得していく '''
+    #モジュールのメンバーを取得する。
 
     attr_names = attr_path.split('.')
     obj = None
@@ -59,7 +59,7 @@ def get_module_attr(module, attr_path):
             elif obj:
                 obj = getattr(obj, attr)
     except AttributeError as a:
-        logging.error(f'モジュールメンバーのインポート失敗。memberpath: {attr_path}')
+        logging.error(f'モジュールメンバーのインポート失敗。path: {attr_path}')
         print_exc()
     return obj
 

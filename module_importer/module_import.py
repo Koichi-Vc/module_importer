@@ -1,4 +1,5 @@
-import importlib
+from importlib import import_module
+from importlib.util import find_spec
 import logging
 from pathlib import Path
 from re import sub, escape
@@ -64,14 +65,14 @@ def get_module_attr(module, attr_path):
     return obj
 
 
-def get_module(module_path_name, split_place=None):
+def get_module(module_path, split_place=None):
     ''' moduleを動的にインポートする。'''
     obj = None
     module = None
-    split_place = module_path_name.count('.')#モジュールパスドットの数を数える
+    split_place = module_path.count('.')#モジュールパスドットの数を数える
 
     #モジュールパスをfromとimport部分に分割するが、始めは分割せず、module_nameのみでimportを試みる。
-    module_name, obj_name = split_module_path(module_path_name, split_place)
+    module_name, obj_name = split_module_path(module_path, split_place)
     
     if module_name:
 
@@ -80,26 +81,30 @@ def get_module(module_path_name, split_place=None):
             try:
                 if place == 0:
                     #placeが0になった場合、module_nameをトップレベルパスにしてブレークする。
-                    module_name, obj_name = split_module_path(module_path_name, split_place=place)
+                    module_name, obj_name = split_module_path(module_path, split_place=place)
                     break
-                module = importlib.import_module(module_name)#インポートに成功した時点でbreakする。
-                break
-
+                has_module = find_spec(module_name)#moduleのスペックを取得
+                if has_module:
+                    #モジュールが存在していればインポートを実行
+                    module = import_module(module_name)#インポートに成功した時点でbreakする。
+                    break
+                else:
+                    module_name, obj_name = split_module_path(module_path, split_place=place)
+                   
             except ModuleNotFoundError:
                 #モジュールを取得できなかった場合は、インポート出来る迄分割するドットを左へずらして行く。
                 exc_type, exc_value, exc_traceback = exc_info()
-                if module_path_name not in str(exc_value) and module_name not in str(exc_value):
+                if module_path not in str(exc_value) and module_name not in str(exc_value):
                     #errorメッセージにインポートするモジュールやオブジェクト名が含まれていなかった場合、予期しないエラーが発生したと解釈する。
                     module = None
                     break
                 module = None
-                module_name, obj_name = split_module_path(module_path_name, split_place=place)
+                module_name, obj_name = split_module_path(module_path, split_place=place)
 
-        
         #break又はfor終了時点でのmoduleインポート状況を評価
         if module is None:
             #Noneの場合、改めてmodule_nameでインポートを試みる。
-            module = importlib.import_module(module_name)
+            module = import_module(module_name)
     
     if module and obj_name:
         obj = get_module_attr(module, obj_name)

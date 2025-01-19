@@ -65,6 +65,32 @@ def get_module_attr(module, attr_path):
     return obj
 
 
+def error_message_valid(error_message, module_path):
+    #モジュールパス名がエラーメッセージに含まれているか検査する。
+    #真だった場合、エラーはモジュールパス由来、偽だった場合は、モジュールパス以外が理由の可能性があると解釈する。
+
+    error_message = str(error_message).replace("'", '').replace('"',"")
+    dot_length = module_path.count('.') if module_path.count('.') else 1
+    included = False
+
+    for i in reversed(range(dot_length)):
+
+        split_module = split_module_path(module_path, i)
+        module_name = split_module[0]
+        
+        if module_name in error_message and i != 0:
+            #errorメッセージにモジュールパスが一部以上含まれていた場合、エラーの原因はモジュールパス由来と判断する。
+            included = True
+            break
+        elif i == 0 and module_name in error_message.split():
+
+            included = True
+            break
+
+    return included
+        
+
+
 def get_module(module_path, split_place=None):
     ''' moduleを動的にインポートする。'''
     obj = None
@@ -94,7 +120,7 @@ def get_module(module_path, split_place=None):
             except ModuleNotFoundError:
                 #モジュールを取得できなかった場合は、インポート出来る迄分割するドットを左へずらして行く。
                 exc_type, exc_value, exc_traceback = exc_info()
-                if module_path not in str(exc_value) and module_name not in str(exc_value):
+                if not error_message_valid(str(exc_value), module_name):
                     #errorメッセージにインポートするモジュールやオブジェクト名が含まれていなかった場合、予期しないエラーが発生したと解釈する。
                     module = None
                     break

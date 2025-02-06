@@ -18,7 +18,12 @@ importlibの理解が不足しており、今後はモジュールのリロー�
 - importlib
 - pathlib
 - re
-  
+- setuptools
+### 使用ライブラリのライセンス情報
+- **ライブラリ:** setuptools
+- **ライセンス情報:** [setuptools LICENSE](https://github.com/pypa/setuptools/blob/main/LICENSE)
+
+
 ## 使い方
 最も簡単な使い方はget_moduleにインポートパスを渡す事です。
 

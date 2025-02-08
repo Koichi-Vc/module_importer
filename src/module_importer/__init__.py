@@ -1,0 +1,1 @@
+from .module_import import get_module

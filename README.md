@@ -14,21 +14,13 @@ importlibを用いて、インポートパスからモジュールやオブジ�
 #### 課題
 importlibの理解が不足しており、今後はモジュールのリロードを始め、将来的にはMetaPathFinder等を応用した機能の実装に取り組んで行きます。
 
-## 使用している主要なライブラリ
-- importlib
-- pathlib
-- re
-- setuptools
-### 使用ライブラリのライセンス情報
-- **ライブラリ:** setuptools
-- **ライセンス情報:** [setuptools LICENSE](https://github.com/pypa/setuptools/blob/main/LICENSE)
-
-
 ## 使い方
 最も簡単な使い方はget_moduleにインポートパスを渡す事です。
 
 ### 例
 ```
+from module_importer import get_module
+
 module_path = 'mypackages.subpack.mymodule'
 module = get_module(module_path)
 ```
@@ -66,3 +58,11 @@ args:
 - attr_path: オブジェクトのインポートパス
 
 
+## 使用している主要なライブラリ
+- importlib
+- pathlib
+- re
+- setuptools
+### 使用ライブラリのライセンス情報
+- **ライブラリ:** setuptools
+- **ライセンス情報:** [setuptools LICENSE](https://github.com/pypa/setuptools/blob/main/LICENSE)

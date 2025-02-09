@@ -14,6 +14,12 @@ importlibを用いて、インポートパスからモジュールやオブジ�
 #### 課題
 importlibの理解が不足しており、今後はモジュールのリロードを始め、将来的にはMetaPathFinder等を応用した機能の実装に取り組んで行きます。
 
+## インストール
+#### pipでインストールする場合。
+`pip install git+https://github.com/Koichi-Vc/module_importer.git`
+#### cloneする場合
+`git clone https://github.com/Koichi-Vc/module_importer.git`
+
 ## 使い方
 最も簡単な使い方はget_moduleにインポートパスを渡す事です。
 

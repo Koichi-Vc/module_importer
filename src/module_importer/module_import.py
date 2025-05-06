@@ -102,7 +102,7 @@ def get_module(module_path, split_place=None):
     
     if module_name:
 
-        for place in reversed(range(split_place)):
+        for place in reversed(range(split_place+1)):
 
             try:
                 if place == 0:
